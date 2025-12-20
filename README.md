@@ -40,11 +40,22 @@ REACT_APP_FIREBASE_PROJECT_ID=your_project_id
 REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 ```
 
-## 📱 Demo Accounts
-- **Admin**: admin@agritrace.com | Password123
-- **Farmer**: farmer@agritrace.com | Password123
-- **Consumer**: consumer@agritrace.com | Password123
-- **Exporter**: exporter@agritrace.com | Password123
+👨‍💼 Admin Access
+Pre-configured Admin Accounts (Password: 12345678 for all):
+
+abel1@gmail.com - Super Admin (Full system access)
+
+abel2@gmail.com - Standard Admin (Product validation, user management)
+
+abel3@gmail.com - Standard Admin (Product validation, view only)
+
+📱 Demo Accounts
+Farmer Demo: farmer@agritrace.com | Password
+
+Consumer Demo: consumer@agritrace.com | Password
+
+Exporter Demo: exporter@agritrace.com | Password
+
 
 ## 🏗️ Tech Stack
 - **Frontend**: React, Vite, Tailwind CSS
