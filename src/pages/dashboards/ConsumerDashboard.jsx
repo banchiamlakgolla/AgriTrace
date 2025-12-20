@@ -17,12 +17,11 @@ import {
   TrendingUp,
   History,
   Scan,
-  ShoppingBag // ADD THIS
+  ShoppingBag
 } from 'lucide-react';
 
 const ConsumerDashboard = () => {
   const navigate = useNavigate();
-  const [scannedProduct, setScannedProduct] = useState(null);
   const [recentScans, setRecentScans] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -34,14 +33,45 @@ const ConsumerDashboard = () => {
     email: userData.email || "consumer@example.com"
   };
 
-  // Mock data - replace with actual Firestore queries
+  // Fetch recent scans from localStorage or backend
   useEffect(() => {
-    // Simulate recent scans
-    setRecentScans([
-      { id: 1, name: "Organic Coffee Beans", date: "2024-11-15", verified: true },
-      { id: 2, name: "Fresh Avocados", date: "2024-11-14", verified: true },
-      { id: 3, name: "Arabica Coffee", date: "2024-11-13", verified: false },
-    ]);
+    const savedScans = JSON.parse(localStorage.getItem('agritrace_recent_scans') || '[]');
+    if (savedScans.length > 0) {
+      setRecentScans(savedScans);
+    } else {
+      // Default mock data
+      const mockScans = [
+        { 
+          id: 1, 
+          name: "Organic Coffee Beans", 
+          date: "2024-11-15", 
+          verified: true, 
+          productId: "PROD-123456-ABC",
+          farmer: "Axeb Yirga",
+          location: "Gonder, Ethiopia"
+        },
+        { 
+          id: 2, 
+          name: "Fresh Avocados", 
+          date: "2024-11-14", 
+          verified: true, 
+          productId: "PROD-789012-DEF",
+          farmer: "Maria Garcia",
+          location: "Michoacán, Mexico"
+        },
+        { 
+          id: 3, 
+          name: "Arabica Coffee", 
+          date: "2024-11-13", 
+          verified: false, 
+          productId: "PROD-345678-GHI",
+          farmer: "Unknown",
+          location: "Unknown"
+        },
+      ];
+      setRecentScans(mockScans);
+      localStorage.setItem('agritrace_recent_scans', JSON.stringify(mockScans));
+    }
   }, []);
 
   const handleLogout = () => {
@@ -49,24 +79,27 @@ const ConsumerDashboard = () => {
     navigate('/login');
   };
 
+  // Fixed: Navigate to QRScanner page
   const handleScanQR = () => {
-  
-    console.log("Scan QR code");
+    navigate('/qr-scanner');
   };
-  <div className="mb-8">
-  <Link 
-    to="/scan"
-    className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all"
-  >
-    <QrCode className="w-6 h-6 mr-3" />
-    Scan Product QR Code
-  </Link>
-  <p className="text-gray-600 mt-3">Verify product authenticity in seconds</p>
-</div>
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    if (searchQuery.trim()) {
+      // Navigate to verification with product ID
+      navigate('/qr-scanner', { state: { productId: searchQuery } });
+    }
+  };
+
+  // Handle viewing product details
+  const handleViewDetails = (scan) => {
+    navigate('/qr-scanner', { 
+      state: { 
+        productId: scan.productId,
+        prefill: true 
+      } 
+    });
   };
 
   return (
@@ -122,6 +155,18 @@ const ConsumerDashboard = () => {
           <p className="text-gray-600 text-lg">
             Scan QR codes to verify authenticity and trace the journey of your food from farm to table.
           </p>
+          
+          {/* Quick Scan Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleScanQR}
+              className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all"
+            >
+              <QrCode className="w-6 h-6 mr-3" />
+              Scan Product QR Code
+            </button>
+            <p className="text-gray-600 mt-3">Verify product authenticity in seconds</p>
+          </div>
         </div>
 
         {/* Search and Scan Section */}
@@ -135,7 +180,7 @@ const ConsumerDashboard = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Enter product ID or batch number..."
+                  placeholder="Enter product ID (e.g., PROD-123456-ABC)"
                   className="flex-1 border border-gray-300 rounded-l-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
@@ -161,12 +206,15 @@ const ConsumerDashboard = () => {
                 className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center mx-auto shadow-lg hover:shadow-xl transition-all"
               >
                 <Scan className="w-6 h-6 mr-3" />
-                Scan Product QR Code
+                Open QR Scanner
               </button>
+              <p className="text-sm text-gray-500 mt-4">
+                Scan product QR codes for instant verification
+              </p>
             </div>
           </div>
 
-          {/* Browse Products - NEW SECTION */}
+          {/* Browse Products */}
           <div className="bg-white rounded-2xl shadow-lg p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Browse Products</h2>
             <div className="text-center py-4">
@@ -190,22 +238,27 @@ const ConsumerDashboard = () => {
         {/* Recent Scans */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Recent Scans</h2>
-            <button className="text-blue-600 hover:text-blue-800 flex items-center">
+            <h2 className="text-xl font-bold text-gray-800">Recent Verifications</h2>
+            <button 
+              onClick={() => navigate('/qr-scanner')}
+              className="text-blue-600 hover:text-blue-800 flex items-center"
+            >
               <History className="w-5 h-5 mr-2" />
-              View All
+              Verify More
             </button>
           </div>
           
           <div className="space-y-4">
             {recentScans.map((scan) => (
-              <div key={scan.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+              <div key={scan.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Package className="w-5 h-5 text-blue-600" />
                     <div>
                       <h3 className="font-medium text-gray-800">{scan.name}</h3>
-                      <p className="text-sm text-gray-500">Scanned: {scan.date}</p>
+                      <p className="text-sm text-gray-500">Verified: {scan.date}</p>
+                      <p className="text-xs text-gray-400">ID: {scan.productId}</p>
+                      <p className="text-xs text-gray-400">Farmer: {scan.farmer}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -219,7 +272,10 @@ const ConsumerDashboard = () => {
                         Unverified
                       </span>
                     )}
-                    <button className="text-blue-600 hover:text-blue-800 text-sm">
+                    <button 
+                      onClick={() => handleViewDetails(scan)}
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 hover:bg-blue-50 rounded"
+                    >
                       View Details
                     </button>
                   </div>

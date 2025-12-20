@@ -1,22 +1,26 @@
-
-import React from 'react';
-import { QrCode, Download, Printer, Copy, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
+import { QrCode, Download, Printer, Copy, CheckCircle, XCircle } from 'lucide-react'; // ADD XCircle here
 
 const QRGenerator = ({ product }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
-  // Generate verification URL
-  const verificationUrl = `${window.location.origin}/verify/${product.id}`;
+  // Check if product exists FIRST
+  if (!product) {
+    return (
+      <div className="bg-white rounded-2xl shadow-xl p-6 max-w-md mx-auto text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <XCircle className="w-8 h-8 text-red-600" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-800">No Product Data</h2>
+        <p className="text-gray-600">Product information is not available</p>
+      </div>
+    );
+  }
+
+  // Generate verification URL - use productId field if available
+  const verificationUrl = `${window.location.origin}/verify/${product.productId || product.id}`;
   
-  // QR data
-  const qrData = JSON.stringify({
-    productId: product.id,
-    productName: product.name,
-    farmerName: product.farmerName,
-    verificationUrl: verificationUrl,
-    timestamp: new Date().toISOString()
-  });
-
   const handleCopy = () => {
     navigator.clipboard.writeText(verificationUrl);
     setCopied(true);
@@ -24,8 +28,26 @@ const QRGenerator = ({ product }) => {
   };
 
   const handleDownload = () => {
-    // For now, just show message
-    alert('QR download feature will be implemented');
+    const svg = document.getElementById('qrcode-svg');
+    if (svg) {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const pngFile = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.download = `qrcode-${product.productId || product.id}.png`;
+        downloadLink.href = pngFile;
+        downloadLink.click();
+      };
+      
+      img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+    }
   };
 
   const handlePrint = () => {
@@ -43,35 +65,17 @@ const QRGenerator = ({ product }) => {
         <p className="text-gray-600">Scan to verify authenticity</p>
       </div>
 
-      {/* QR Code Display */}
+      {/* QR CODE */}
       <div className="border-2 border-green-200 rounded-xl p-6 mb-6 flex justify-center">
-        <div className="relative">
-          {/* QR Placeholder - Replace with actual QR component */}
-          <div className="w-48 h-48 bg-gradient-to-br from-green-100 to-blue-100 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <div className="grid grid-cols-10 gap-0.5">
-                {Array.from({ length: 100 }).map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="w-2 h-2 bg-green-700"
-                    style={{ 
-                      opacity: Math.random() > 0.3 ? 1 : 0,
-                      borderRadius: i % 3 === 0 ? '50%' : '2px'
-                    }}
-                  />
-                ))}
-              </div>
-              <div className="mt-4">
-                <div className="w-8 h-8 bg-green-600 rounded-lg mx-auto"></div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-green-600 font-bold">AT</span>
-            </div>
-          </div>
-        </div>
+        <QRCodeSVG
+          id="qrcode-svg"
+          value={verificationUrl}
+          size={200}
+          level="H"
+          includeMargin={true}
+          bgColor="#ffffff"
+          fgColor="#000000"
+        />
       </div>
 
       {/* Product Info */}
@@ -84,11 +88,11 @@ const QRGenerator = ({ product }) => {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Product ID:</span>
-            <span className="font-mono text-sm">{product.id.substring(0, 12)}...</span>
+            <span className="font-mono text-sm">{product.productId || product.id}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Farmer:</span>
-            <span className="font-medium">{product.farmerName}</span>
+            <span className="font-medium">{product.farmerName || product.farmerEmail || 'Unknown'}</span>
           </div>
           {product.blockchainVerified && (
             <div className="flex justify-between">
@@ -158,8 +162,10 @@ const QRGenerator = ({ product }) => {
 QRGenerator.defaultProps = {
   product: {
     id: 'PROD-2024-001-ABC123',
+    productId: 'PROD-2024-001-ABC123',
     name: 'Organic Coffee Beans',
     farmerName: 'Abel Farm',
+    farmerEmail: 'farmer@example.com',
     blockchainVerified: true
   }
 };
