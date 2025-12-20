@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# 🌱 AgriTrace
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Farm-to-Table Transparency Platform powered by Cardano Blockchain**
 
-## Available Scripts
+## 🎯 The Problem
+Small-scale Ethiopian farmers lose product identity and fair pricing as their goods move through opaque supply chains. Global consumers cannot verify product origins or ethical claims.
 
-In the project directory, you can run:
+## 🛠️ Our Solution
+AgriTrace creates **direct, blockchain-verified connections** from farm to consumer. Each product batch gets a unique Cardano Native Asset, with its journey immutably recorded on-chain.
 
-### `npm start`
+## 🔗 Cardano Integration
+- **Native Asset Tokens**: Each product batch has a unique Cardano token representing its digital identity
+- **On-Chain Metadata**: Origin, harvest date, and farmer details stored in token metadata
+- **Immutable Journey Log**: Every supply chain step recorded as a verifiable Cardano transaction
+- **QR Code Verification**: Consumers scan to fetch and verify product history directly from Cardano
+- **Anti-Tamper Proof**: Blockchain acts as neutral, third-party witness to prevent record alteration
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## ✨ Features
+- ✅ Multi-step farm product registration
+- ✅ QR code generation & verification
+- ✅ Firebase Authentication & Storage
+- ✅ Multi-role dashboards (Farmer, Admin, Consumer)
+- ✅ Real-time product tracking
+- ✅ Image upload & management
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Quick Start
+```bash
+git clone https://github.com/banchiamlakgolla/AgriTrace.git
+cd AgriTrace
+npm install
+npm run dev
+```
 
-### `npm test`
+## 🔧 Environment Setup
+Create `.env.local`:
+```
+REACT_APP_FIREBASE_API_KEY=your_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📱 Demo Accounts
+- **Admin**: admin@agritrace.com | Password123
+- **Farmer**: farmer@agritrace.com | Password123
+- **Consumer**: consumer@agritrace.com | Password123
 
-### `npm run build`
+## 🏗️ Tech Stack
+- **Frontend**: React, Vite, Tailwind CSS
+- **Backend**: Firebase (Auth, Firestore, Storage)
+- **Blockchain**: Cardano (Native Assets, Metadata)
+- **Deployment**: Vercel/Firebase Hosting
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
