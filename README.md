@@ -44,6 +44,7 @@ REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 - **Admin**: admin@agritrace.com | Password123
 - **Farmer**: farmer@agritrace.com | Password123
 - **Consumer**: consumer@agritrace.com | Password123
+- **Exporter**: exporter@agritrace.com | Password123
 
 ## 🏗️ Tech Stack
 - **Frontend**: React, Vite, Tailwind CSS
